@@ -23,6 +23,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 const renameFile = async (req, res, next) => {
   const { file } = req;
+
   if (file) {
     const newFilename = `${Date.now()}${file.originalname}`;
     fs.rename(
@@ -51,11 +52,16 @@ const renameFile = async (req, res, next) => {
             const storage = getStorage(firebaseApp);
             const storageRef = ref(storage, newFilename);
 
-            await uploadBytes(storageRef, readFile);
+            const metadata = {
+              contentType: "image",
+            };
+
+            await uploadBytes(storageRef, readFile, metadata);
             const firebaseFileURL = await getDownloadURL(storageRef);
 
             req.firebaseFileURL = firebaseFileURL;
             req.newFilename = newFilename;
+
             debug(chalk.yellow("Success on upload file to Firebase"));
             debug(chalk.green("Success on rename file"));
             if (firebaseFileURL) {

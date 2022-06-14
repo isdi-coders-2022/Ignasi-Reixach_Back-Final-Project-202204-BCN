@@ -96,9 +96,11 @@ const updateDish = async (req, res, next) => {
   debug(chalk.bgBlue("New Request to update dish"));
   try {
     const { idDish } = req.params;
+
     let dish = req.body;
     const { file } = req;
     const { image, firebaseFileURL } = req;
+
     if (image) {
       dish = {
         ...dish,
